@@ -44,7 +44,7 @@ def autoencoder(dims, act='relu', init='glorot_uniform'):
     h = Dense(dims[-1], kernel_initializer=init, name='encoder_%d' % (n_stacks - 1))(h)  
 
     y = h
-     # internal layers in decoder ??????????????????????????
+     # internal layers in decoder 
     for i in range(n_stacks-1, 0, -1):
          y = Dense(dims[i], activation=act, kernel_initializer=init, name='decoder_%d' % i)(y)
     
@@ -61,14 +61,6 @@ autoencoder, encoder = autoencoder(dims, init='glorot_uniform')
 
 autoencoder.compile(optimizer='adam', loss='binary_crossentropy')
 
-
-(x_train, y_train), (x_test, y_test) = mnist.load_data()
-x_train = x_train.astype('float32') / 255.
-x_test = x_test.astype('float32') / 255.
-x_train = x_train.reshape((len(x_train), np.prod(x_train.shape[1:])))
-x_test = x_test.reshape((len(x_test), np.prod(x_test.shape[1:])))
-print(x_train.shape)
-print(x_test.shape)
 
 
 autoencoder.fit(x_train, x_train,
