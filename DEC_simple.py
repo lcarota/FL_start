@@ -227,8 +227,9 @@ class DEC(object):
 
                 # evaluate the clustering performance
                 y_pred = q.argmax(1)
- #               if y is not None:
+                if y is not None:
  #                   acc = np.round(metrics.acc(y, y_pred), 5)
+                    acc = np.round(metrics.Accuracy(y, y_pred), 5)
  #                   nmi = np.round(metrics.nmi(y, y_pred), 5)
  #                   ari = np.round(metrics.ari(y, y_pred), 5)
  #                   loss = np.round(loss, 5)
@@ -253,11 +254,11 @@ class DEC(object):
             index = index + 1 if (index + 1) * batch_size <= x.shape[0] else 0
 
             # save intermediate model
- #           if ite % save_interval == 0:
- #               print('saving model to:', save_dir + '/DEC_model_' + str(ite) + '.h5')
- #               self.model.save_weights(save_dir + '/DEC_model_' + str(ite) + '.h5')
+            if ite % save_interval == 0:
+                print('saving model to:', save_dir + '/DEC_model_' + str(ite) + '.h5')
+                self.model.save_weights(save_dir + '/DEC_model_' + str(ite) + '.h5')
 
-  #          ite += 1
+            ite += 1
 
         # save the trained model
         logfile.close()
@@ -311,7 +312,7 @@ if __name__ == "__main__":
     # setting parameters
     if args.dataset == 'mnist' or args.dataset == 'fmnist':
         update_interval = 140
-        pretrain_epochs = 10
+        pretrain_epochs = 2
         init = VarianceScaling(scale=1. / 3., mode='fan_in',
                                distribution='uniform')  # [-limit, limit], limit=sqrt(1./fan_in)
         pretrain_optimizer = SGD(lr=1, momentum=0.9)
@@ -348,5 +349,5 @@ if __name__ == "__main__":
     dec.compile(optimizer=SGD(0.01, 0.9), loss='kld')
     y_pred = dec.fit(x, y=y, tol=args.tol, maxiter=args.maxiter, batch_size=args.batch_size,
                      update_interval=update_interval, save_dir=args.save_dir)
-    #print('acc:', metrics.acc(y, y_pred))
+    print('acc:', metrics.acc(y, y_pred))
     print('clustering time: ', (time() - t0))
